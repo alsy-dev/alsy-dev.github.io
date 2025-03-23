@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project #1: LED Blink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container py-5">
+        <h2>Project #3: Sensors</h2>
+        <p><small class="text-body-secondary">Ali Syauqie | 23 Maret 2025</small></p>
+
+        <figure class="figure d-block">
+            <img src="/img/post3/rangkaian_water_level.jpg" class="figure-img img-fluid rounded d-block mx-auto"
+                style="max-height: 400px;">
+            <figcaption class="figure-caption text-center">Rangkaian arduino untuk water level sensor yang aku buat</figcaption>
+        </figure>
+
+        <p>Halo semuanya👋🏻 disini aku mau cerita tentang prosesku mengerjakan Project #3, yaitu bereksperimen dengan built-in sensor dan sensor external pada ESP32.</p>
+        
+        <p>Oke jadi aku bakal mulai dari penugasannya dulu. Jadi pada tanggal 17 Maret 2025, minggu ke-5 perkuliahan IoT,
+            dosenku menugaskan mahasiswa dikelasnya untuk melakukan Project #3 atau bereksperimen dengan sensor, baik built-in sensor maupun sensor eksternal, pada ESP32.</p>
+            
+            <p>Setelah itu, aku pun mulai membeli water level sensor untuk digunakan sebagai sensor eksternal yang diperlukan di <em>e-commerce</em>. Aku juga turut membeli jumper female-to-female karena sensor bisa dihubungkan secara langsung ke ESP32 tanpa melalui breadboard jika saya memiliki kabel tersebut. </p>
+            
+            <figure class="figure d-block">
+                <img src="/img/post3/water_level_sensor.jpg" class="figure-img img-fluid rounded d-block mx-auto" alt="..."
+                    style="max-height: 400px;">
+                <figcaption class="figure-caption text-center">Water level sensor yang aku dapatkan.
+                </figcaption>
+            </figure>
+        <p>Nah, udah tuh kan datang alat dan bahan yang aku pesan, terus aku mulai ngerjain dari yang built-in dulu. Untuk yang built-in aku memilih touch sensor sebagai bahan eksperimenku. Seperti biasa dimulai dari baca baca <a href="https://randomnerdtutorials.com/esp32-touch-pins-arduino-ide/">RandomNerdTutorials</a> dulu. Nah, dari situ aku jadi tau soal pin mana yang memiliki touch sensor. Disini aku memilih memanfaatkan pin D4 (touch0), simpelnya karena <em>code snippet</em> yg diberikan di RandomNerdTutorials menggunakan pin D4 tersebut (jadi ga perlu ngedit kode lagi hehe...). Nah agar lebih menarik dari sekedar hanya menggunakan serial monitor, aku memilih menambahkan touch sensor ke rangkaian LED yg kemaren kubuat. Jika touch sensor merasakan sentuhan maka lampu LED akan nyala dan sebaliknya jika tidak merasakan sentuhan maka LED akan mati. Berikut adalah kode final yang akhirnya saya gunakan: </p>
+
+        <figure class="figure d-block">
+            <img src="/img/post3/touch_code.png" class="figure-img img-fluid rounded d-block mx-auto" alt="..."
+                style="max-height: 400px;">
+            <figcaption class="figure-caption text-center">Kode yang digunakan untuk bereksperimen dengan touch sensor.</figcaption>
+        </figure>
+
+        <p>Pada kode diatas digunakan <em>conditional if-else</em> dengan kondisi <code>touch &lt; 50</code>, hal ini disebabkan karena saat touch sensor tidak disentuh nilainya ±80, sedangkan saat disentuh bernilai &lt 10, sehingga terpilihlah 50 sebagai nilai random yang jauh dari kedua nilai pada kondisi tersebut yang dapat digunakan untuk membedakan state ketika sensor disentuh dan sedang tidak disentuh. Berikut adalah video hasil akhirnya: </p>
+
+        <div class="ratio ratio-16x9 d-block">
+            <iframe src="https://drive.google.com/file/d/1MUSnKzk7BxJ4p6JAUoSNig5EQ6z5itDU/preview" width="640" height="480"
+                allow="autoplay"></iframe>
+        </div>
+        <p class="figure-caption text-center">Video keberhasilan touch sensor.</p>
+
+        <p>Oke untuk berikutnya aku memutuskan untuk bereksperimen dengan water level sensor. Untuk sensor tersebut aku mulai dari baca-baca terlebih dahulu dari artikel di <a href="https://www.electronicwings.com/esp32/water-level-detection-interfacing-with-esp32">ElectronicWings</a> dari situ, kemudian membaca <a href="https://randomnerdtutorials.com/esp32-pinout-reference-gpios/">ESP32 Pinout Reference</a> untuk mengetahui pin yang bisa menerima input analog.</p>
+        
+
+        <p>Seperti yang dapat dilihat pada gambar diatas dapat diperhatikan bahwa water level sensor memiliki 3 pin, yakni pin + yang harus dihubungkan ke power source, pin - yang harus dihubungkan ke ground, dan pin S yang berfungsi sebagai tempat penyaluran hasil pengukuran yang dilakukan sensor.
+        </p>
+
+        <p>Pin + saya hubungkan ke pin D4 yang di set <code>pinMode</code>nya sebagai <code>OUTPUT</code>, Pin - dihubungkan ke pin GND, dan pin S dihubungkan ke pin D15 yang men<em>support</em> data analog. </p>
+
+        <figure class="figure d-block">
+            <img src="/img/post3/water_level_code.png" class="figure-img img-fluid rounded d-block mx-auto" alt="..."
+                style="max-height: 400px;">
+            <figcaption class="figure-caption text-center">Kode untuk water level sensor.
+            </figcaption>
+        </figure>
+
+        <p>Pada kode ini di method <code>setup</code> pin D4 diberikan value <code>LOW</code> yang berarti Sensor tidak akan berada dalam keadaan menyala. Pada bagian method <code>loop</code> di awal-awal diberikan value <code>HIGH</code> pada pin D4 untuk menyalakan sensor, kemudian diberikan <code>delay(10)</code> untuk menunggu sensor menyala terlebih dahulu sebelum dilakukan pembacaan data dari sensor. Berikutnya digunakan <code>analogRead</code> yang berfungsi seperti <code>digitalRead</code> namun untuk sinyal analog untuk membaca data dari sensor. Berikutnya, pin D4 kembali diberikan value <code>LOW</code> untuk mematikan sensor setelah dilakukan pembacaan. Penyalaan sensor hanya saat pembacaan ini dapat mengurangi korosi pada sensor. Kemudian hasil pembacaan dicatat di serial monitor, dan diberikan <code>delay(1000)</code> pada akhir method <code>loop</code> yang berfungsi agar pembacaan dilakukan setiap 1 detik sekali saja.</p>
+        
+        <p>Berikut adalah hasil final dari eksperimen dengan water level sensor: </p>
+
+        <div class="ratio ratio-16x9 d-block">
+            <iframe src="https://drive.google.com/file/d/1D-hn9heQFJS0TTTSPEOQchvF34e1dIXL/preview" width="640" height="480"
+                allow="autoplay"></iframe></iframe>
+        </div>
+        <p class="figure-caption text-center">Video keberhasilan water level sensor.</p>
+
+        <p>Dengan ini maka kita telah resmi menamatkan Project #3.</p>
+        <img src="/img/post1/absolute-cinema.jpg" class="img-fluid rounded d-block mx-auto" alt="" style="max-height: 600px;">
+    </div>
+</body>
+
+</html>
